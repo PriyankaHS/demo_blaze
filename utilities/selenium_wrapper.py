@@ -3,8 +3,10 @@ from selenium.common import TimeoutException, NoSuchElementException
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support.expected_conditions import visibility_of_element_located, invisibility_of_element, \
-    presence_of_all_elements_located, element_to_be_clickable
+from selenium.webdriver.support.expected_conditions import (visibility_of_element_located,
+                                                            invisibility_of_element,
+                                                            presence_of_all_elements_located,
+                                                            element_to_be_clickable)
 from selenium.webdriver.support.wait import WebDriverWait
 
 
@@ -13,6 +15,7 @@ class SeleniumWrapper:
         self.driver: webdriver = driver
         self.time_out = time_out
         self.action_chains = ActionChains(self.driver)
+        self.wait = WebDriverWait(self.driver, self.time_out)
 
     def goto_url(self, url):
         self.driver.get(url)
@@ -38,26 +41,31 @@ class SeleniumWrapper:
 
     def element_visible(self, locator: str, by_type=By.XPATH) -> bool:
         try:
-            WebDriverWait(self.driver, timeout=self.time_out).until(visibility_of_element_located((by_type, locator)))
+            self.wait.until(visibility_of_element_located((by_type, locator)))
             return True
         except (TimeoutException, NoSuchElementException):
             return False
 
     def element_invisible(self, locator: str, by_type=By.XPATH) -> bool:
         try:
-            WebDriverWait(self.driver, timeout=self.time_out).until(invisibility_of_element(
+            self.wait.until(invisibility_of_element(
                 self.get_element(locator, by_type)))
             return True
         except TimeoutException:
             return False
 
+    def wait_till_element_invisible(self, locator: str, by_type=By.XPATH):
+        self.wait.until(invisibility_of_element((by_type, locator)))
+
     def element_present(self, locator: str, by_type=By.XPATH) -> bool:
         try:
-            (WebDriverWait(self.driver, timeout=self.time_out).
-             until(presence_of_all_elements_located((by_type, locator))))
+            self.wait.until(presence_of_all_elements_located((by_type, locator)))
             return True
         except TimeoutException:
             return False
+
+    def wait_till_element_present(self, locator: str, by_type=By.XPATH):
+        self.wait.until(presence_of_all_elements_located((by_type, locator)))
 
     def move_to_element(self, locator: str, by_type=By.XPATH):
         self.action_chains.move_to_element(self.get_element(locator, by_type)).perform()
@@ -70,10 +78,13 @@ class SeleniumWrapper:
 
     def element_clickable(self, locator: str, by_type=By.XPATH) -> bool:
         try:
-            WebDriverWait(self.driver, self.time_out).until(element_to_be_clickable((by_type, locator)))
+            self.wait.until(element_to_be_clickable((by_type, locator)))
             return True
         except TimeoutException:
             return False
+
+    def wait_till_element_clickable(self, locator: str, by_type=By.XPATH):
+        self.wait.until(element_to_be_clickable((by_type, locator)))
 
     def get_title(self) -> str:
         return self.driver.title
