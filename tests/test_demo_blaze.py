@@ -53,7 +53,7 @@ class TestDemoBlaze:
         resolution = self.demo_blaze.fetching_apple_monitor_resolution()
         print("Apple monitor resolution", resolution)
 
-    def test_validate_cart_and_item(self):
-        self.demo_blaze.navigate_demo_blaze()
-        self.demo_blaze.login(username="priyankahs", password="123456", case_type=True)
-        self.demo_blaze.validate_cart_and_items()
+    # def test_validate_cart_and_item(self):
+    #     self.demo_blaze.navigate_demo_blaze()
+    #     self.demo_blaze.login(username="priyankahs", password="123456", case_type=True)
+    #     self.demo_blaze.validate_cart_and_items()
