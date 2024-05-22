@@ -6,7 +6,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.expected_conditions import (visibility_of_element_located,
                                                             invisibility_of_element,
                                                             presence_of_all_elements_located,
-                                                            element_to_be_clickable)
+                                                            element_to_be_clickable, alert_is_present)
 from selenium.webdriver.support.wait import WebDriverWait
 
 
@@ -28,6 +28,10 @@ class SeleniumWrapper:
 
     def get_elements(self, locator: str, by_type=By.XPATH) -> list:
         return self.driver.find_elements(by_type, locator)
+
+    def get_elements_text(self, locator: str, by_type=By.XPATH) -> list:
+        elements = self.driver.find_elements(by_type, locator)
+        return [element.text for element in elements]
 
     def send_keys(self, locator: str, by_type=By.XPATH, value=""):
         self.get_element(locator, by_type).send_keys(value)
@@ -100,3 +104,19 @@ class SeleniumWrapper:
             self.js_click_element(locator, by_type)
         else:
             raise TimeoutException
+
+    def is_page_loaded(self):
+        loaded_flag = self.driver.execute_script("return document.readyState;")
+        if loaded_flag == "complete":
+            print("Page loaded successfully")
+            return True
+        else:
+            print("Page not loaded")
+            return False
+
+    def wait_till_element_visible(self, locator: str, by_type=By.XPATH):
+        self.wait.until(visibility_of_element_located((by_type, locator)))
+        self.scroll_to_element(locator,by_type)
+
+    def wait_till_alert_present(self):
+        self.wait.until(alert_is_present())
