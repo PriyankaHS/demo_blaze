@@ -339,8 +339,3 @@ class DemoBlaze:
         success_card_number = txn_details.split()[12]
         assert str(total_amount) == str(success_amount)
         assert str(credit_card_num) == str(success_card_number)
-
-
-
-
-

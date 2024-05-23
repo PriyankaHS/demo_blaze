@@ -1,9 +1,5 @@
-import logging
-import time
 from random import choice
-from time import sleep
 from pages.page_demo_blaze import DemoBlaze
-from pages.page_swag_labs import SwagLabs
 import pytest
 
 
@@ -45,15 +41,10 @@ class TestDemoBlaze:
 
     def test_apple_monitor_resolution(self):
         """
-        Checking and printing Apple monitor resolution
+        Description:- Checking and printing Apple monitor resolution
         :return:
         """
         self.demo_blaze.navigate_demo_blaze()
         self.demo_blaze.login(username="priyankahs", password="123456", case_type=True)
         resolution = self.demo_blaze.fetching_apple_monitor_resolution()
         print("Apple monitor resolution", resolution)
-
-    # def test_validate_cart_and_item(self):
-    #     self.demo_blaze.navigate_demo_blaze()
-    #     self.demo_blaze.login(username="priyankahs", password="123456", case_type=True)
-    #     self.demo_blaze.validate_cart_and_items()
