@@ -1,4 +1,7 @@
 from random import choice
+
+import allure
+
 from pages.page_demo_blaze import DemoBlaze
 import pytest
 
@@ -9,6 +12,11 @@ class TestDemoBlaze:
         self.driver = driver_instance
         self.demo_blaze = DemoBlaze(self.driver)
 
+    @allure.title("Test Demo Blaze")
+    @allure.description("validating all functionalities in this case")
+    @allure.tag("Homepage", "phones", "laptops", "cart")
+    @allure.severity(allure.severity_level.CRITICAL)
+    @allure.label("owner", "Priyanka HS")
     def test_demo_blaze(self):
         """
         Description:- All the scenarios are covered in one test case
@@ -39,6 +47,11 @@ class TestDemoBlaze:
         self.demo_blaze.checkout_items()
         self.demo_blaze.place_order_error_message_validation()
 
+    @allure.title("Test Apple monitor resolution")
+    @allure.description("validating all functionalities in this case")
+    @allure.tag("Homepage", "monitor")
+    @allure.severity(allure.severity_level.NORMAL)
+    @allure.label("owner", "Priyanka HS")
     def test_apple_monitor_resolution(self):
         """
         Description:- Checking and printing Apple monitor resolution

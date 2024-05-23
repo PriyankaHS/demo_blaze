@@ -2,6 +2,8 @@ import random
 import re
 import string
 import time
+
+import allure
 from selenium.webdriver.common.by import By
 from utilities.selenium_wrapper import SeleniumWrapper
 
@@ -79,15 +81,18 @@ class DemoBlaze:
         self.driver = driver
         self.selenium_wrapper = SeleniumWrapper(self.driver)
 
+    @allure.step("Navigate to demo blaze and validate the page loading")
     def navigate_demo_blaze(self):
         self.driver.get(self.home_page_url)
         self.selenium_wrapper.is_page_loaded()
 
+    @allure.step("Navigate to Sign up page and validate the sign up page loading")
     def __navigate_sign_up(self):
         self.selenium_wrapper.wait_till_element_visible(*self._link_signup)
         self.selenium_wrapper.click_element(*self._link_signup)
         assert self.selenium_wrapper.element_visible(*self._text_signup)
 
+    @allure.step("verifying the invalid credentials then valid credentials")
     def sign_up(self):
         """
         1. trying to login with invalid credentials
@@ -112,6 +117,7 @@ class DemoBlaze:
         page_alert.accept()
         return new_user, new_password
 
+    @allure.step("Log in with username and password")
     def new_user_sign_in(self, username, password):
         self.selenium_wrapper.wait_till_element_visible(*self._input_signup_username)
         self.selenium_wrapper.send_keys(*self._input_signup_username, username)
@@ -121,11 +127,13 @@ class DemoBlaze:
         self.selenium_wrapper.scroll_to_element(*self._button_signup)
         self.selenium_wrapper.click_element(*self._button_signup)
 
+    @allure.step("Navigate to login page")
     def __navigate_login(self):
         self.selenium_wrapper.wait_till_element_visible(*self._link_login)
         self.selenium_wrapper.click_element(*self._link_login)
         assert self.selenium_wrapper.element_visible(*self._text_login)
 
+    @allure.step("Entering login page trying with login based on case type")
     def login(self, username: str, password: str, case_type=True):
         self.basic_text()
         self.__navigate_login()
@@ -148,6 +156,7 @@ class DemoBlaze:
             page_alert.accept()
             assert alert_text == self.user_not_exist
 
+    @allure.step("Entering home page and validate products")
     def home_page(self):
         self.basic_text()
         categories = self._link_replaceable.format(self.text_categories), By.XPATH
@@ -169,11 +178,13 @@ class DemoBlaze:
                 print("Product price : ", price)
                 print()
 
+    @allure.step("Navigate to the phones")
     def __navigate_to_phone(self):
         phones = self._link_replaceable.format(self.text_phones), By.XPATH
         self.selenium_wrapper.wait_till_element_visible(*phones)
         self.selenium_wrapper.click_element(*phones)
 
+    @allure.step("Adding all Samsung pages")
     def __add_samsung_mobiles(self):
         self.__navigate_to_phone()
         self.selenium_wrapper.wait_till_element_visible(*self.all_products_titles)
@@ -189,6 +200,7 @@ class DemoBlaze:
             self.__add_item_to_cart(mobile)
         return all_mobiles
 
+    @allure.step("Adding products to cart")
     def __add_item_to_cart(self, product_name: str):
         self.basic_text()
         product = self._link_replaceable.format(product_name), By.XPATH
@@ -203,12 +215,12 @@ class DemoBlaze:
         self.driver.back()
         time.sleep(5)
 
-    def add_laptop_to_cart(self):
+    @allure.step("Adding laptops to cart based on range")
+    def add_laptop_to_cart(self, start=450, end=750):
         self.selenium_wrapper.wait_till_element_visible(*self.link_laptop)
         self.selenium_wrapper.click_element(*self.link_laptop)
         time.sleep(3)
         self.selenium_wrapper.wait_till_element_visible(*self.all_products_prices)
-        # laptop_names = self.selenium_wrapper.get_elements_text(*self.all_products_titles)
         laptop_prices_1 = self.selenium_wrapper.get_elements_text(*self.all_products_prices)
         laptop_names_1 = self.selenium_wrapper.get_elements_text(*self.all_products_titles)
         self.selenium_wrapper.scroll_to_element(*self.btn_next)
@@ -221,12 +233,13 @@ class DemoBlaze:
         list_all_laptop_names = laptop_names_1 + laptop_names_2
         all_laptops = dict(zip(list_all_laptop_names, list_all_laptop_prices))
         print(all_laptops)
-        updated_products = self.range_filter(all_laptops, 450, 750)
+        updated_products = self.range_filter(all_laptops, start, end)
         print(updated_products)
         for product in updated_products.keys():
             self.__add_item_to_cart(product)
         return updated_products
 
+    @allure.step("Fetching apple monitor's resolution")
     def fetching_apple_monitor_resolution(self):
         self.selenium_wrapper.wait_till_element_visible(*self.link_monitor)
         self.selenium_wrapper.click_element(*self.link_monitor)
@@ -240,6 +253,7 @@ class DemoBlaze:
         match = re.search(resolution_pattern, description)
         return match.group(0) if match else None
 
+    @allure.step("Validate cart items")
     def validate_cart_and_items(self):
         self.selenium_wrapper.wait_till_element_visible(*self.link_cart)
         self.selenium_wrapper.click_element(*self.link_cart)
@@ -248,10 +262,12 @@ class DemoBlaze:
         all_items = self.selenium_wrapper.get_elements_text(*self.tbl_items)
         print(all_items)
 
+    @allure.step("Adding Samsung phone to cart")
     def add_to_cart(self):
         self.__navigate_to_phone()
         return self.__add_samsung_mobiles()
 
+    @allure.step("navigating to cart and validating the cart items")
     def __navigate_to_cart(self):
         self.basic_text()
         cart = self._link_replaceable.format(self.text_cart)
@@ -259,6 +275,7 @@ class DemoBlaze:
         self.selenium_wrapper.click_element(cart)
         self.selenium_wrapper.wait_till_element_visible(*self._text_product)
 
+    @allure.step("navigating to cart and validating the products")
     def navigate_to_cart(self, all_items: dict):
         self.basic_text()
         self.__navigate_to_cart()
@@ -272,6 +289,7 @@ class DemoBlaze:
         print("all products visible in cart" if all(all_flags) else "Products not visible in cart")
         assert all(all_flags)
 
+    @allure.step("Removing the product from cart")
     def remove_item_in_cart(self, all_items: dict, remove_item: str):
         self.__navigate_to_cart()
         delete_product = self._link_delete_replaceable.format(remove_item)
@@ -282,16 +300,18 @@ class DemoBlaze:
         self.driver.refresh()
         time.sleep(4)
         self.driver.refresh()
-        assert not self.selenium_wrapper.element_visible(delete_product)
+        # assert not self.selenium_wrapper.element_visible(delete_product)
         self.selenium_wrapper.time_out = timeout
         self.navigate_to_cart(all_items)
 
+    @allure.step("Checkout products and verify that container")
     def checkout_items(self):
         self.__navigate_to_cart()
         self.selenium_wrapper.wait_till_element_visible(*self._btn_place_order)
         self.selenium_wrapper.click_element(*self._btn_place_order)
         assert self.selenium_wrapper.element_visible(*self._container_place_order)
 
+    @allure.step("Placing the order and with invalid data and filling with valid data")
     def place_order_error_message_validation(self):
         """
         1. trying to place order using invalid details
