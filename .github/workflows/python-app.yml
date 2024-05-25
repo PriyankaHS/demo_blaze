@@ -1,4 +1,4 @@
-name: Run Python tests with Selenium and pytest on macOS
+name: Run Python tests with Selenium and pytest on Ubuntu OS
 
 on:
   push:
@@ -24,7 +24,9 @@ jobs:
           python-version: 3.11
 
       - name: Install dependencies
-        run: pip install --upgrade pytest selenium webdriver-manager allure-pytest pytest-xdist pytest-rerunfailures pytz
+        run: |
+          pip install --upgrade pip
+          pip install pytest selenium webdriver-manager allure-pytest pytest-xdist pytest-rerunfailures pytz
 
       - name: Install Java
         uses: actions/setup-java@v2
