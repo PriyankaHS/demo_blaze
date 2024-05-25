@@ -26,7 +26,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install pytest selenium webdriver-manager allure-pytest pytest-xdist pytest-rerunfailures pytz
+          pip install pytest selenium webdriver-manager allure-pytest pendulum 
 
       - name: Install Java
         uses: actions/setup-java@v2
