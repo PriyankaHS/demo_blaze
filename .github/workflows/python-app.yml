@@ -34,21 +34,16 @@ jobs:
           distribution: 'adopt'
           java-version: '11'
 
-      - name: Install Allure CLI
-        run: |
-          sudo apt-add-repository ppa:qameta/allure -y
-          sudo apt-get update
-          sudo apt-get install allure
-
       - name: Run tests
         run: pytest
         continue-on-error: true
 
       - name: Generate Allure report
-        run: allure generate ./allure-results
+        run: |
+          allure generate --clean
 
-      - name: Upload Allure report as an artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload Allure report
+        uses: actions/upload-artifact@v2
         with:
-          name: allure-results
-          path: ./allure-results
+          name: allure-report
+          path: allure-report
