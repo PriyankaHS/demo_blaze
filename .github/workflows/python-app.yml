@@ -29,7 +29,7 @@ jobs:
           pip install pytest selenium webdriver-manager allure-pytest pendulum 
 
       - name: Install Java
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v4
         with:
           distribution: 'adopt'
           java-version: '11'
@@ -48,7 +48,7 @@ jobs:
         run: allure generate ./allure-results
 
       - name: Upload Allure report as an artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: allure-results
           path: ./allure-results
